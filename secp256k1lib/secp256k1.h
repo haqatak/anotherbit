@@ -179,7 +179,11 @@ namespace secp256k1 {
 
 		uint256 div(uint32_t val) const;
 
+		uint256 div(uint64_t val) const;
+
 		uint256 mod(uint32_t val) const;
+
+		uint256 mod(uint64_t val) const;
 
 		unsigned int toInt32() const
 		{

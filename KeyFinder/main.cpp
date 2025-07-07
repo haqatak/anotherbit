@@ -429,7 +429,7 @@ int run()
 /**
  * Parses a string in the form of x/y
  */
-bool parseShare(const std::string &s, uint32_t &idx, uint32_t &total)
+bool parseShare(const std::string &s, uint64_t &idx, uint64_t &total)
 {
     size_t pos = s.find('/');
     if(pos == std::string::npos) {
@@ -437,13 +437,13 @@ bool parseShare(const std::string &s, uint32_t &idx, uint32_t &total)
     }
 
     try {
-        idx = util::parseUInt32(s.substr(0, pos));
+        idx = util::parseUInt64(s.substr(0, pos));
     } catch(...) {
         return false;
     }
 
     try {
-        total = util::parseUInt32(s.substr(pos + 1));
+        total = util::parseUInt64(s.substr(pos + 1));
     } catch(...) {
         return false;
     }
@@ -469,8 +469,8 @@ int main(int argc, char **argv)
     bool optBlocks = false;
     bool optPoints = false;
 
-    uint32_t shareIdx = 0;
-    uint32_t numShares = 0;
+    uint64_t shareIdx = 0;
+    uint64_t numShares = 0;
 
     // Catch --help first
     for(int i = 1; i < argc; i++) {
