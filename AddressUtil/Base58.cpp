@@ -71,13 +71,15 @@ std::string Base58::toBase58(const secp256k1::uint256 &x)
 
 	secp256k1::uint256 value = x;
 
+	uint32_t divFactor = 58;
+
 	while(!value.isZero()) {
-		secp256k1::uint256 digit = value.mod(58);
+		secp256k1::uint256 digit = value.mod(divFactor);
 		int digitInt = digit.toInt32();
 
 		s = BASE58_STRING[digitInt] + s;
 
-		value = value.div(58);
+		value = value.div(divFactor);
 	}
 
 	return s;
