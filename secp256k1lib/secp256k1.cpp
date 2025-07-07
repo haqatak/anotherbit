@@ -210,51 +210,26 @@ uint256 uint256::div(uint32_t val) const
 
 uint256 uint256::div(uint64_t val) const
 {
-	uint256 t = *this;
 	uint256 quotient;
+	uint256 remainder;
+	remainder = *this;
 
-	// Place 64-bit divisor in appropriate words
-	uint32_t kWords[8] = { 0 };
-	kWords[6] = static_cast<uint32_t>(val);        // Lower 32 bits
-	kWords[7] = static_cast<uint32_t>(val >> 32);  // Upper 32 bits
-
-	int shiftCount = 6 * 32;
-
-	// Find MSB position across both words
-	if (kWords[7] != 0) {
-		shiftCount = 7 * 32;
-		while((kWords[7] & 0x80000000) == 0) {
-			// Shift the 64-bit value left by 1
-			uint64_t temp = (static_cast<uint64_t>(kWords[7]) << 32) | kWords[6];
-			temp <<= 1;
-			kWords[6] = static_cast<uint32_t>(temp);
-			kWords[7] = static_cast<uint32_t>(temp >> 32);
-			shiftCount++;
-		}
-	} else {
-		// val fits in 32 bits, work with kWords[6]
-		while((kWords[6] & 0x80000000) == 0) {
-			kWords[6] <<= 1;
-			shiftCount++;
-		}
+	// Early return for zero divisor (undefined, but let's avoid UB)
+	if (val == 0) {
+		return quotient; // or throw
 	}
 
-	uint256 k(kWords);
-	uint256 divisor(val);
-	
-	// while t >= divisor
-	while(t.cmp(divisor) >= 0) {
+	// Prepare divisor as 64-bit
+	uint32_t divisorWords[2];
+	divisorWords[0] = static_cast<uint32_t>(val);
+	divisorWords[1] = static_cast<uint32_t>(val >> 32);
 
-		// while t < k
-		while(t.cmp(k) < 0) {
-			// k = k / 2
-			k = rightShift(k, 1);
-			shiftCount--;
-		}
-		// t = t - k
-		::sub(t.v, k.v, t.v, 8);
-
-		quotient = quotient.add(uint256(2).pow(shiftCount));
+	// Long division: process from most significant word to least
+	uint64_t r = 0;
+	for (int i = 7; i >= 0; --i) {
+		r = (r << 32) | remainder.v[i];
+		quotient.v[i] = static_cast<uint32_t>(r / val);
+		r = r % val;
 	}
 
 	return quotient;

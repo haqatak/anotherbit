@@ -661,6 +661,7 @@ int main(int argc, char **argv)
 
         _config.nextKey = startPos;
         _config.startKey = startPos;
+
     }
 
 	// Check option for compressed, uncompressed, or both
