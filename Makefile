@@ -68,7 +68,7 @@ export BUILD_CUDA
 export BUILD_MPS
 
 # Libtorch variables
-LIBTORCH_HOME=/usr/local/libtorch
+LIBTORCH_HOME=/Users/haq/miniconda3/lib/python3.12/site-packages/torch
 LIBTORCH_INCLUDE=${LIBTORCH_HOME}/include
 LIBTORCH_LIB=${LIBTORCH_HOME}/lib
 
