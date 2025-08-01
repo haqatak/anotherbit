@@ -38,7 +38,7 @@ endif
 # CUDA variables
 COMPUTE_CAP=86
 NVCC=nvcc
-NVCCFLAGS=-std=c++11 -gencode=arch=compute_${COMPUTE_CAP},code=sm_${COMPUTE_CAP} -Xptxas="-v" -Xcompiler "${CXXFLAGS}"
+NVCCFLAGS=-std=c++17 -gencode=arch=compute_${COMPUTE_CAP},code=sm_${COMPUTE_CAP} -Xptxas="-v" -Xcompiler "${CXXFLAGS}"
 CUDA_HOME=/usr/local/cuda
 CUDA_LIB=${CUDA_HOME}/lib64
 CUDA_INCLUDE=${CUDA_HOME}/include
@@ -68,7 +68,7 @@ export BUILD_CUDA
 export BUILD_MPS
 
 # Libtorch variables
-LIBTORCH_HOME=/Users/haq/miniconda3/lib/python3.12/site-packages/torch
+LIBTORCH_HOME?=/Users/haq/miniconda3/lib/python3.12/site-packages/torch
 LIBTORCH_INCLUDE=${LIBTORCH_HOME}/include
 LIBTORCH_LIB=${LIBTORCH_HOME}/lib
 
@@ -86,6 +86,7 @@ endif
 ifeq ($(BUILD_MPS),1)
 	TARGETS:=${TARGETS} dir_mpsKeySearchDevice
 	CXXFLAGS:=${CXXFLAGS} -I${LIBTORCH_INCLUDE} -I${LIBTORCH_INCLUDE}/torch/csrc/api/include
+	LIBS:=${LIBS} -L${LIBTORCH_LIB} -ltorch -lc10
 endif
 
 

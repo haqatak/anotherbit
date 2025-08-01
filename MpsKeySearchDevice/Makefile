@@ -1,3 +1,5 @@
+.PHONY: all clean
+
 NAME=MpsKeySearchDevice
 SRC=$(wildcard *.cpp)
 OBJS=$(SRC:.cpp=.o)
