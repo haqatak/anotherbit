@@ -1,6 +1,6 @@
 
 CUR_DIR=$(shell pwd)
-DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl MpsKeySearchDevice
+DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
 
 INCLUDE = $(foreach d, $(DIRS), -I$(CUR_DIR)/$d)
 
@@ -10,35 +10,12 @@ LIBS+=-L$(LIBDIR)
 
 # C++ options
 CXX=g++
-CXXFLAGS=-O2 -std=c++17
-LDFLAGS=
-
-# Check for OS
-ifeq ($(OS),Windows_NT)
-	# Windows-specific settings
-else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Linux)
-		# Linux-specific settings
-		LIBS+=-lstdc++ -lcrypto
-	endif
-	ifeq ($(UNAME_S),Darwin)
-		# macOS-specific settings
-		CXX=clang++
-		# Use Apple's OpenCL framework
-		LDFLAGS+=-framework OpenCL -L/opt/homebrew/opt/openssl/lib
-		CXXFLAGS+=-I/opt/homebrew/opt/openssl/include
-		LIBS+=-lstdc++ -lcrypto
-		# Suppress unused parameter warnings that are common in cross-platform code
-		CXXFLAGS+=-Wno-unused-parameter
-	endif
-endif
-
+CXXFLAGS=-O2 -std=c++11
 
 # CUDA variables
 COMPUTE_CAP=86
 NVCC=nvcc
-NVCCFLAGS=-std=c++17 -gencode=arch=compute_${COMPUTE_CAP},code=sm_${COMPUTE_CAP} -Xptxas="-v" -Xcompiler "${CXXFLAGS}"
+NVCCFLAGS=-std=c++11 -gencode=arch=compute_${COMPUTE_CAP},code=sm_${COMPUTE_CAP} -Xptxas="-v" -Xcompiler "${CXXFLAGS}"
 CUDA_HOME=/usr/local/cuda
 CUDA_LIB=${CUDA_HOME}/lib64
 CUDA_INCLUDE=${CUDA_HOME}/include
@@ -57,7 +34,6 @@ export NVCCFLAGS
 export LIBS
 export CXX
 export CXXFLAGS
-export LDFLAGS
 export CUDA_LIB
 export CUDA_INCLUDE
 export CUDA_MATH
@@ -65,12 +41,6 @@ export OPENCL_LIB
 export OPENCL_INCLUDE
 export BUILD_OPENCL
 export BUILD_CUDA
-export BUILD_MPS
-
-# Libtorch variables
-LIBTORCH_HOME?=/Users/haq/miniconda3/lib/python3.12/site-packages/torch
-LIBTORCH_INCLUDE=${LIBTORCH_HOME}/include
-LIBTORCH_LIB=${LIBTORCH_HOME}/lib
 
 TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_secp256k1lib dir_util dir_logger dir_addrgen
 
@@ -83,12 +53,6 @@ ifeq ($(BUILD_OPENCL),1)
 	CXXFLAGS:=${CXXFLAGS} -DCL_TARGET_OPENCL_VERSION=${OPENCL_VERSION}
 endif
 
-ifeq ($(BUILD_MPS),1)
-	TARGETS:=${TARGETS} dir_mpsKeySearchDevice
-	CXXFLAGS:=${CXXFLAGS} -I${LIBTORCH_INCLUDE} -I${LIBTORCH_INCLUDE}/torch/csrc/api/include
-endif
-
-
 all:	${TARGETS}
 
 dir_cudaKeySearchDevice: dir_keyfinderlib dir_cudautil dir_logger
@@ -96,9 +60,6 @@ dir_cudaKeySearchDevice: dir_keyfinderlib dir_cudautil dir_logger
 
 dir_clKeySearchDevice: dir_embedcl dir_keyfinderlib dir_clutil dir_logger
 	make --directory CLKeySearchDevice
-
-dir_mpsKeySearchDevice: dir_keyfinderlib dir_logger
-	make --directory MpsKeySearchDevice
 
 dir_embedcl:
 	make --directory embedcl
@@ -123,10 +84,6 @@ endif
 
 ifeq ($(BUILD_OPENCL),1)
 	KEYFINDER_DEPS:=$(KEYFINDER_DEPS) dir_clKeySearchDevice
-endif
-
-ifeq ($(BUILD_MPS),1)
-	KEYFINDER_DEPS:=$(KEYFINDER_DEPS) dir_mpsKeySearchDevice
 endif
 
 dir_keyfinder:	$(KEYFINDER_DEPS)

@@ -7,17 +7,11 @@ ifeq ($(BUILD_CUDA), 1)
 	cp cuKeyFinder.bin $(BINDIR)/cuBitCrack
 endif
 ifeq ($(BUILD_OPENCL),1)
-	${CXX} -DBUILD_OPENCL -o clKeyFinder.bin ${CPPSRC} ${INCLUDE} -I${OPENCL_INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS} -L${OPENCL_LIB} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lCLKeySearchDevice -lclutil -llogger -lutil -lcmdparse
+	${CXX} -DBUILD_OPENCL -o clKeyFinder.bin ${CPPSRC} ${INCLUDE} -I${OPENCL_INCLUDE} ${CXXFLAGS} ${LIBS} -L${OPENCL_LIB} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lCLKeySearchDevice -lclutil -lOpenCL -llogger -lutil -lcmdparse
 	mkdir -p $(BINDIR)
 	cp clKeyFinder.bin $(BINDIR)/clBitCrack
-endif
-ifeq ($(BUILD_MPS),1)
-	${CXX} -DBUILD_MPS -o mpsKeyFinder.bin ${CPPSRC} ${INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS} -L${LIBTORCH_LIB} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lMpsKeySearchDevice -llogger -lutil -lcmdparse -ltorch -lc10
-	mkdir -p $(BINDIR)
-	cp mpsKeyFinder.bin $(BINDIR)/mpsBitCrack
 endif
 
 clean:
 	rm -rf cuKeyFinder.bin
 	rm -rf clKeyFinder.bin
-	rm -rf mpsKeyFinder.bin
