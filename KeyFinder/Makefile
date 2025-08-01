@@ -11,7 +11,13 @@ ifeq ($(BUILD_OPENCL),1)
 	mkdir -p $(BINDIR)
 	cp clKeyFinder.bin $(BINDIR)/clBitCrack
 endif
+ifeq ($(BUILD_METAL),1)
+	${CXX} -DBUILD_METAL -o metalKeyFinder.bin ${CPPSRC} ${INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lMetalKeySearchDevice -llogger -lutil -lcmdparse
+	mkdir -p $(BINDIR)
+	cp metalKeyFinder.bin $(BINDIR)/metalBitCrack
+endif
 
 clean:
 	rm -rf cuKeyFinder.bin
 	rm -rf clKeyFinder.bin
+	rm -rf metalKeyFinder.bin

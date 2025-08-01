@@ -1,6 +1,6 @@
 
 CUR_DIR=$(shell pwd)
-DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
+DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice MetalKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
 
 INCLUDE = $(foreach d, $(DIRS), -I$(CUR_DIR)/$d)
 
@@ -11,6 +11,7 @@ LIBS+=-L$(LIBDIR)
 # C++ options
 CXX=g++
 CXXFLAGS=-O2 -std=c++11
+LDFLAGS=
 
 # CUDA variables
 COMPUTE_CAP=86
@@ -41,6 +42,7 @@ export OPENCL_LIB
 export OPENCL_INCLUDE
 export BUILD_OPENCL
 export BUILD_CUDA
+export BUILD_METAL
 
 TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_secp256k1lib dir_util dir_logger dir_addrgen
 
@@ -53,6 +55,13 @@ ifeq ($(BUILD_OPENCL),1)
 	CXXFLAGS:=${CXXFLAGS} -DCL_TARGET_OPENCL_VERSION=${OPENCL_VERSION}
 endif
 
+ifeq ($(BUILD_METAL),1)
+	TARGETS:=${TARGETS} dir_metalKeySearchDevice
+	CXX=clang++
+	CXXFLAGS+=-std=c++17 -Wno-unused-parameter
+	LDFLAGS+=-framework Metal -framework Foundation
+endif
+
 all:	${TARGETS}
 
 dir_cudaKeySearchDevice: dir_keyfinderlib dir_cudautil dir_logger
@@ -60,6 +69,9 @@ dir_cudaKeySearchDevice: dir_keyfinderlib dir_cudautil dir_logger
 
 dir_clKeySearchDevice: dir_embedcl dir_keyfinderlib dir_clutil dir_logger
 	make --directory CLKeySearchDevice
+
+dir_metalKeySearchDevice: dir_keyfinderlib dir_logger
+	make --directory MetalKeySearchDevice
 
 dir_embedcl:
 	make --directory embedcl
@@ -84,6 +96,10 @@ endif
 
 ifeq ($(BUILD_OPENCL),1)
 	KEYFINDER_DEPS:=$(KEYFINDER_DEPS) dir_clKeySearchDevice
+endif
+
+ifeq ($(BUILD_METAL),1)
+	KEYFINDER_DEPS:=$(KEYFINDER_DEPS) dir_metalKeySearchDevice
 endif
 
 dir_keyfinder:	$(KEYFINDER_DEPS)
