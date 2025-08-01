@@ -25,7 +25,7 @@ INCLUDE += -I${LIBTORCH_INCLUDE} -I${LIBTORCH_INCLUDE}/torch/csrc/api/include
 CXXFLAGS=-O2 -std=c++17 -Wno-unused-parameter
 
 # Linker flags
-LDFLAGS=-L/opt/homebrew/opt/openssl/lib -L${LIBDIR} -L${LIBTORCH_LIB}
+LDFLAGS=-L/opt/homebrew/opt/openssl/lib -L${LIBDIR} -L${LIBTORCH_LIB} -rpath ${LIBTORCH_LIB}
 
 # Libraries
 LIBS=-lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lMpsKeySearchDevice -llogger -lutil -lcmdparse -ltorch -lc10 -lcrypto
