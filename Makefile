@@ -86,7 +86,6 @@ endif
 ifeq ($(BUILD_MPS),1)
 	TARGETS:=${TARGETS} dir_mpsKeySearchDevice
 	CXXFLAGS:=${CXXFLAGS} -I${LIBTORCH_INCLUDE} -I${LIBTORCH_INCLUDE}/torch/csrc/api/include
-	LIBS:=${LIBS} -L${LIBTORCH_LIB} -ltorch -lc10
 endif
 
 
