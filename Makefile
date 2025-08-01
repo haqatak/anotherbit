@@ -26,7 +26,8 @@ else
 		# macOS-specific settings
 		CXX=clang++
 		# Use Apple's OpenCL framework
-		LDFLAGS+=-framework OpenCL
+		LDFLAGS+=-framework OpenCL -L/usr/local/opt/openssl/lib
+		CXXFLAGS+=-I/usr/local/opt/openssl/include
 		LIBS+=-lstdc++ -lcrypto
 		# Suppress unused parameter warnings that are common in cross-platform code
 		CXXFLAGS+=-Wno-unused-parameter
