@@ -1,0 +1,57 @@
+# A minimal Makefile for building the MPS backend on macOS
+
+# Compiler
+CXX=clang++
+
+# Directories
+CUR_DIR=$(shell pwd)
+BINDIR=$(CUR_DIR)/bin
+
+# Include paths
+INCLUDE = -I${CUR_DIR}/util \
+          -I${CUR_DIR}/AddressUtil \
+          -I${CUR_DIR}/CmdParse \
+          -I${CUR_DIR}/CryptoUtil \
+          -I${CUR_DIR}/KeyFinderLib \
+          -I${CUR_DIR}/MpsKeySearchDevice \
+          -I${CUR_DIR}/secp256k1lib \
+          -I${CUR_DIR}/Logger \
+          -I/opt/homebrew/opt/openssl/include \
+          -I/Users/haq/miniconda3/lib/python3.12/site-packages/torch/include \
+          -I/Users/haq/miniconda3/lib/python3.12/site-packages/torch/include/torch/csrc/api/include
+
+# C++ flags
+CXXFLAGS=-O2 -std=c++17 -Wno-unused-parameter -DBUILD_MPS
+
+# Linker flags
+LDFLAGS=-L/opt/homebrew/opt/openssl/lib \
+        -L/Users/haq/miniconda3/lib/python3.12/site-packages/torch/lib \
+        -rpath /Users/haq/miniconda3/lib/python3.12/site-packages/torch/lib
+
+# Libraries
+LIBS=-lstdc++ -lcrypto -ltorch -lc10
+
+# Source files
+SRCS = $(wildcard util/*.cpp) \
+       $(wildcard AddressUtil/*.cpp) \
+       $(wildcard CmdParse/*.cpp) \
+       $(wildcard CryptoUtil/*.cpp) \
+       $(wildcard KeyFinderLib/*.cpp) \
+       $(wildcard MpsKeySearchDevice/*.cpp) \
+       $(wildcard secp256k1lib/*.cpp) \
+       $(wildcard Logger/*.cpp) \
+       KeyFinder/main.cpp \
+       KeyFinder/ConfigFile.cpp \
+       KeyFinder/DeviceManager.cpp
+
+# Target
+all: mpsBitCrack
+
+mpsBitCrack:
+	mkdir -p ${BINDIR}
+	${CXX} -o ${BINDIR}/mpsBitCrack ${SRCS} ${INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS}
+
+clean:
+	rm -rf ${BINDIR}
+
+.PHONY: all clean
