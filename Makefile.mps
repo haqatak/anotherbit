@@ -22,7 +22,7 @@ LIBTORCH_LIB=${LIBTORCH_HOME}/lib
 INCLUDE += -I${LIBTORCH_INCLUDE} -I${LIBTORCH_INCLUDE}/torch/csrc/api/include
 
 # C++ flags
-CXXFLAGS=-O2 -std=c++17 -Wno-unused-parameter
+CXXFLAGS=-O2 -std=c++17 -Wno-unused-parameter -DBUILD_MPS
 
 # Linker flags
 LDFLAGS=-L/opt/homebrew/opt/openssl/lib -L${LIBDIR} -L${LIBTORCH_LIB} -rpath ${LIBTORCH_LIB}
