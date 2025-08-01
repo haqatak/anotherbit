@@ -20,6 +20,10 @@
 #include "CLKeySearchDevice.h"
 #endif
 
+#ifdef BUILD_MPS
+#include "MpsKeySearchDevice.h"
+#endif
+
 typedef struct {
     // startKey is the first key. We store it so that if the --continue
     // option is used, the correct progress is displayed. startKey and
@@ -248,6 +252,12 @@ static KeySearchDevice *getDeviceContext(DeviceManager::DeviceInfo &device, int 
 #ifdef BUILD_OPENCL
     if(device.type == DeviceManager::DeviceType::OpenCL) {
         return new CLKeySearchDevice(device.physicalId, threads, pointsPerThread, blocks);
+    }
+#endif
+
+#ifdef BUILD_MPS
+    if(device.type == DeviceManager::DeviceType::MPS) {
+        return new MpsKeySearchDevice(device.id, pointsPerThread);
     }
 #endif
 
