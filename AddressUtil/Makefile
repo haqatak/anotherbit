@@ -1,12 +1,12 @@
-.PHONY: all clean
-
+NAME=addressutil
 SRC=$(wildcard *.cpp)
-OBJS=$(SRC:.cpp=.o)
 
-all:    ${OBJS}
-
-%.o: %.cpp
-	${CXX} -c $< -o $@ ${INCLUDE} ${CXXFLAGS}
+all:    ${SRC}
+	for file in ${SRC} ; do\
+		${CXX} -c $$file ${INCLUDE} ${CXXFLAGS};\
+	done
+	mkdir -p ${LIBDIR}
+	ar rvs ${LIBDIR}/lib$(NAME).a *.o
 
 clean:
 	rm -rf *.o

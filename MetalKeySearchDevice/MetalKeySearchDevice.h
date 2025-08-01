@@ -1,12 +1,17 @@
-#ifndef _MPS_KEY_SEARCH_DEVICE_H
-#define _MPS_KEY_SEARCH_DEVICE_H
+#ifndef _METAL_KEY_SEARCH_DEVICE_H
+#define _METAL_KEY_SEARCH_DEVICE_H
 
 #include "KeySearchDevice.h"
-#include <torch/torch.h>
+#include <Metal/Metal.hpp>
 
-class MpsKeySearchDevice : public KeySearchDevice {
+class MetalKeySearchDevice : public KeySearchDevice {
 private:
-    torch::Device _device;
+    MTL::Device* _device;
+    MTL::CommandQueue* _commandQueue;
+    MTL::Library* _library;
+    MTL::Function* _function;
+    MTL::ComputePipelineState* _pipelineState;
+
     secp256k1::uint256 _startKey;
     secp256k1::uint256 _stride;
     int _compression;
@@ -14,8 +19,8 @@ private:
     uint64_t _keysPerStep;
 
 public:
-    MpsKeySearchDevice(int deviceId, uint64_t keysPerStep);
-    virtual ~MpsKeySearchDevice();
+    MetalKeySearchDevice(int deviceId, uint64_t keysPerStep);
+    virtual ~MetalKeySearchDevice();
 
     virtual void init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride);
     virtual void doStep();

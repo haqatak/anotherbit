@@ -20,8 +20,8 @@
 #include "CLKeySearchDevice.h"
 #endif
 
-#ifdef BUILD_MPS
-#include "MpsKeySearchDevice.h"
+#ifdef BUILD_METAL
+#include "MetalKeySearchDevice.h"
 #endif
 
 typedef struct {
@@ -255,9 +255,9 @@ static KeySearchDevice *getDeviceContext(DeviceManager::DeviceInfo &device, int 
     }
 #endif
 
-#ifdef BUILD_MPS
-    if(device.type == DeviceManager::DeviceType::MPS) {
-        return new MpsKeySearchDevice(device.id, pointsPerThread);
+#ifdef BUILD_METAL
+    if(device.type == DeviceManager::DeviceType::Metal) {
+        return new MetalKeySearchDevice(device.id, pointsPerThread);
     }
 #endif
 

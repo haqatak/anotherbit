@@ -23,7 +23,7 @@ public:
     enum {
         CUDA = 0,
         OpenCL,
-        MPS
+        Metal
     };
 };
 
