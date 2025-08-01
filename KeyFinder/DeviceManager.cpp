@@ -62,16 +62,24 @@ std::vector<DeviceManager::DeviceInfo> DeviceManager::getDevices()
 #endif
 
 #ifdef BUILD_MPS
-    if(torch::mps::is_available()) {
-        DeviceManager::DeviceInfo device;
-        device.name = "Apple MPS";
-        device.type = DeviceType::MPS;
-        device.id = deviceId;
-        device.physicalId = 0;
-        device.memory = 0;
-        device.computeUnits = 0;
-        devices.push_back(device);
-        deviceId++;
+    try {
+        if(torch::mps::is_available()) {
+            DeviceManager::DeviceInfo device;
+            device.name = "Apple MPS";
+            device.type = DeviceType::MPS;
+            device.id = deviceId;
+            // TODO: Get actual MPS device info if available
+            device.physicalId = 0;
+            // TODO: Query MPS memory if possible
+            device.memory = 0;
+            // TODO: Query MPS compute units if possible
+            device.computeUnits = 0;
+            devices.push_back(device);
+            deviceId++;
+        }
+    } catch(const std::exception& ex) {
+        // Log warning but don't fail - MPS is optional
+        // Consider logging: "Warning: MPS device detection failed: " + ex.what()
     }
 #endif
 

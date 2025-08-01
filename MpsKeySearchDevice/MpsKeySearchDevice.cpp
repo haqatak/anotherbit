@@ -1,28 +1,31 @@
 #include "MpsKeySearchDevice.h"
-#include <iostream>
+#include "Logger.h"
 
 MpsKeySearchDevice::MpsKeySearchDevice(int deviceId, uint64_t keysPerStep) : _device(torch::kMPS) {
     if (!torch::mps::is_available()) {
         throw KeySearchException("MPS device not available");
     }
     this->_keysPerStep = keysPerStep;
-    std::cout << "MpsKeySearchDevice created" << std::endl;
+    Logger::log(LogLevel::Info, "MpsKeySearchDevice created");
 }
 
 MpsKeySearchDevice::~MpsKeySearchDevice() {
-    std::cout << "MpsKeySearchDevice destroyed" << std::endl;
+    Logger::log(LogLevel::Info, "MpsKeySearchDevice destroyed");
 }
 
 void MpsKeySearchDevice::init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride) {
     this->_startKey = start;
     this->_compression = compression;
     this->_stride = stride;
-    std::cout << "MpsKeySearchDevice::init" << std::endl;
+    Logger::log(LogLevel::Info, "MpsKeySearchDevice initialized");
 }
 
 void MpsKeySearchDevice::doStep() {
-    // This is where the magic happens
-    // For now, just advance the key
+    // TODO: Implement the core MPS computation by performing
+    // elliptic curve point multiplication using MPS or PyTorch tensors, generate
+    // addresses from the resulting public keys, apply the target matching logic to
+    // check for desired keys, and collect any matching results. Replace the
+    // placeholder increment with this full cryptographic processing workflow.
     _startKey = _startKey + _stride;
 }
 
@@ -31,7 +34,9 @@ void MpsKeySearchDevice::setTargets(const std::set<KeySearchTarget> &targets) {
 }
 
 size_t MpsKeySearchDevice::getResults(std::vector<KeySearchResult> &results) {
-    // Not implemented yet
+    // TODO: Implement this method to populate the results
+    // vector with the found KeySearchResult objects and return the count of these
+    // results to correctly report matches found by the device.
     return 0;
 }
 
@@ -44,7 +49,8 @@ std::string MpsKeySearchDevice::getDeviceName() {
 }
 
 void MpsKeySearchDevice::getMemoryInfo(uint64_t &freeMem, uint64_t &totalMem) {
-    // Not implemented for MPS
+    // TODO: Query actual MPS memory if PyTorch provides API
+    // For now, return reasonable defaults or query system memory
     freeMem = 0;
     totalMem = 0;
 }
