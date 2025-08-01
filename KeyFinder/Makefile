@@ -12,7 +12,7 @@ ifeq ($(BUILD_OPENCL),1)
 	cp clKeyFinder.bin $(BINDIR)/clBitCrack
 endif
 ifeq ($(BUILD_MPS),1)
-	${CXX} -DBUILD_MPS -o mpsKeyFinder.bin ${CPPSRC} ${INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lMpsKeySearchDevice -llogger -lutil -lcmdparse
+	${CXX} -DBUILD_MPS -o mpsKeyFinder.bin ${CPPSRC} ${INCLUDE} ${CXXFLAGS} ${LDFLAGS} ${LIBS} -lkeyfinder -laddressutil -lsecp256k1 -lcryptoutil -lsecp256k1 -lMpsKeySearchDevice -llogger -lutil -lcmdparse -ltorch -lc10
 	mkdir -p $(BINDIR)
 	cp mpsKeyFinder.bin $(BINDIR)/mpsBitCrack
 endif
