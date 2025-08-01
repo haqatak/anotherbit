@@ -8,6 +8,10 @@
 #include "clutil.h"
 #endif
 
+#ifdef BUILD_MPS
+#include <torch/torch.h>
+#endif
+
 std::vector<DeviceManager::DeviceInfo> DeviceManager::getDevices()
 {
     int deviceId = 0;
@@ -54,6 +58,20 @@ std::vector<DeviceManager::DeviceInfo> DeviceManager::getDevices()
         }
     } catch(cl::CLException ex) {
         throw DeviceManager::DeviceManagerException(ex.msg);
+    }
+#endif
+
+#ifdef BUILD_MPS
+    if(torch::mps::is_available()) {
+        DeviceManager::DeviceInfo device;
+        device.name = "Apple MPS";
+        device.type = DeviceType::MPS;
+        device.id = deviceId;
+        device.physicalId = 0;
+        device.memory = 0;
+        device.computeUnits = 0;
+        devices.push_back(device);
+        deviceId++;
     }
 #endif
 
