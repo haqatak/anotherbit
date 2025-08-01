@@ -10,7 +10,7 @@ LIBS+=-L$(LIBDIR)
 
 # C++ options
 CXX=g++
-CXXFLAGS=-O2 -std=c++11
+CXXFLAGS=-O2 -std=c++17
 LDFLAGS=
 
 # Check for OS
