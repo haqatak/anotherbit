@@ -1,12 +1,12 @@
-NAME=cryptoutil
-SRC=$(wildcard *.cpp)
+.PHONY: all clean
 
-all:    ${SRC}
-	for file in ${SRC} ; do\
-		${CXX} -c $$file ${INCLUDE} ${CXXFLAGS};\
-	done
-	mkdir -p ${LIBDIR}
-	ar rvs ${LIBDIR}/lib$(NAME).a *.o
+SRC=$(wildcard *.cpp)
+OBJS=$(SRC:.cpp=.o)
+
+all:    ${OBJS}
+
+%.o: %.cpp
+	${CXX} -c $< -o $@ ${INCLUDE} ${CXXFLAGS}
 
 clean:
 	rm -rf *.o
